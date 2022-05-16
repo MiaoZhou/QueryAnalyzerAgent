@@ -3,10 +3,10 @@
 Database = "MySQL"
 
 # Port to sniff
-ListenPort = 3306
+ListenPort = 3307
 
 # interface to listen on (ex: eth0, eth1, bond0 etc)
-ListenInterface = "eth0"
+ListenInterface = "docker0"
 
 # The max payload of TCP is 64K, but it will be a big CPU overhead to capture 64K.
 # The capture length can be reduced (most of the queries won't take full payload length) to suit your query length
@@ -15,7 +15,7 @@ CaptureLength = 8192
 # You can get packets bigger than the capture length and logging the number of such packets helps us in tuning the capture length.
 # You can also get number of aborted connections due to timeout, reset connections etc
 # Print such instances every ReportStatsInterval seconds
-ReportStatsInterval = 60
+ReportStatsInterval = 60 
 
 # Comma separated list of IPs to be ignored from sniffing
 IgnoreIPs = ""
@@ -43,7 +43,7 @@ MaxRequestLength = 524288
 MaxDBConnections = 1024
 
 # Send the query report to remote server every ReportInterval seconds
-ReportInterval = 300
+ReportInterval = 3
 
 # Log file to print
 LogFile = "/var/log/qan.log"
@@ -56,29 +56,29 @@ LogFile = "/var/log/qan.log"
 Enabled = 0
 
 # Username to connect to the local database
-LocalUsername = "qan_ro"
+LocalUsername = "root"
 
 # Password to connect to the local database
-LocalPassword = "xxxx"
+LocalPassword = "123456"
 
 # Socket to connect to the local database
-LocalSocket = "/var/lib/mysql/mysql.sock"
+LocalSocket = "/run/mysqld/mysqld.sock"
 
 ### Send the query reports to remote database server
 [remoteDB]
-Enabled = 0
+Enabled = 1
 
 # remote database hostname to send results to. If it is IPv6, enclose with [] example: [::1]
-Hostname = ""
+Hostname = "127.0.0.1"
 
 # remote database port to send results to
-Port = 3306
+Port = 3308
 
 # remote database username to send results to
-Username = "qan_rw"
+Username = "root"
 
 # remote database password to send results to
-Password = "xxxx"
+Password = "123456"
 
 # remote database name to send results to
 DBName = "query_analyzer"
@@ -92,7 +92,7 @@ IncludeSample = 1
 # 1 - enabled with skip verify
 # 2 - self signed SSL certificates taken from Ca_cert, Client_cert, Client_key config
 # 3 - SSL certificates taken from Ca_cert, Client_cert, Client_key config
-SSLEnabled = 1
+SSLEnabled = 0
 
 # SSL certificate details
 Ca_cert = ""

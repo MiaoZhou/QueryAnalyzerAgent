@@ -8,12 +8,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	mysql "github.com/go-sql-driver/mysql"
-	"github.com/google/gopacket"
-	"github.com/google/gopacket/layers"
-	"github.com/google/gopacket/pcap"
-	MySQLProtocol "github.com/linkedin/QueryAnalyzerAgent/databases"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
 	"net"
@@ -24,6 +18,13 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	mysql "github.com/go-sql-driver/mysql"
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
+	"github.com/google/gopacket/pcap"
+	MySQLProtocol "github.com/linkedin/QueryAnalyzerAgent/databases"
+	"github.com/spf13/viper"
 )
 
 // Config struct to hold various sections of the config
@@ -126,7 +127,7 @@ var accessDeniedCount uint16
 Read config from toml file and marshal to Config struct
 */
 func ReadConfig() Config {
-	ConfigFile := flag.String("config-file", "/etc/qan.toml", "Path to the configuration file")
+	ConfigFile := flag.String("config-file", "qan.toml", "Path to the configuration file")
 	flag.Parse()
 	viper.SetConfigType("toml")
 	if len(os.Args) > 1 {
@@ -160,7 +161,7 @@ After extracting the info from the TCP header, processPayload is called to proce
 func StartSniffer(ipaddrs []string) {
 	var handle *pcap.Handle
 	var fullLength bool = false
-	handle, err := pcap.OpenLive(Params.Sniffer.ListenInterface, Params.Sniffer.CaptureLength, false, 0)
+	handle, err := pcap.OpenLive(Params.Sniffer.ListenInterface, Params.Sniffer.CaptureLength, true, pcap.BlockForever)
 	if handle == nil || err != nil {
 		msg := "unknown error"
 		if err != nil {
@@ -519,12 +520,12 @@ func sendResultsToDB(host string) (err error) {
 
 				// Uncomment these lines if pseudo GTID has to be ignored
 				/*
-				// Ignore pseudo GTID
-				if strings.Contains(data.sample, "drop view if exists `_pseudo_gtid_`") {
-					delete(queryMetaMap, data.checksum)
-					delete(queryInfoCopyMap, checksum)
-					continue
-				}
+					// Ignore pseudo GTID
+					if strings.Contains(data.sample, "drop view if exists `_pseudo_gtid_`") {
+						delete(queryMetaMap, data.checksum)
+						delete(queryInfoCopyMap, checksum)
+						continue
+					}
 				*/
 
 				queryHistoryCols = append(queryHistoryCols, "(?,?,?,?,?,?,?,?,?)")
