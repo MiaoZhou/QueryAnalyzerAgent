@@ -36,6 +36,7 @@ $ docker compose up -d
 $ docker run --name mysql3307 -p3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 $ docker run --name mysql3308 -p3308:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
 $ docker run --name adminer -p8088:8080 -d adminer, visit http://localhost:8088/ , use `LanIP:3307` (eg. 192.168.0.2:3307) as database host
+$ import `sql/remote_schema.sql` to mysql3308
 ```
 
 ## Build
